@@ -139,7 +139,7 @@
                     </a>
                 </span> -->
                 <span class="link-block">
-                    <a href="https://github.com/ZhengYinan-AIR/FISOR"
+                    <a href="https://github.com/2toinf/DecisionNCE"
                         class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                         <i class="fab fa-github"></i>
@@ -166,47 +166,35 @@
 </style>
 
 <section class="hero teaser">
-<div class="container is-max-desktop">
-        <div class="content has-text-centered">
-        <img src="./assets/intro.jpg" alt="geometric reasoning" width="100%"/>
-        </div>
-</div>
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="matting-video" autoplay muted controls playsinline width="100%" >
+        <source src="./assets/web/teaser.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
 </section>
 
-<!-- <section class="section">
+<section class="section">
     <div class="container" style="margin-bottom: 2vh;">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">🔔News</h2>
-          <div class="content has-text-justified">
-            <p>
-              <b>🔥[2024-01-16]: Our paper <a href="https://openreview.net/forum?id=j5JvZCaDM0">Safe Offline Reinforcement Learning with Feasibility-Guided Diffusion Model</a> has been accepted by ICLR 2024.</b>
-            </p>
-        </div>      
           <h2 class="title is-3">Abstraction</h2>
           <div class="content has-text-justified">
-            <p><strong>
-                How can we train a diffusion policy to satisfy hard constraints using only supervised objectives, without employing iterative Lagrangian-based methods?
-            </strong>
-            </p>
             <p>
-                Safe offline reinforcement learning is a promising way to bypass risky online interactions towards safe policy learning. Most existing methods only enforce soft constraints, i.e., constraining safety violations in expectation below thresholds predetermined. This can lead to potentially unsafe outcomes, thus unacceptable in safety-critical scenarios.
-                An alternative is to enforce the hard constraint of zero violation. However, this can be challenging in offline setting, as it needs to strike the right balance among three highly intricate and correlated aspects: safety constraint satisfaction, reward maximization, and behavior regularization imposed by offline datasets.
-                Interestingly, we discover that via reachability analysis of safe-control theory, the hard safety constraint can be equivalently translated to identifying the largest feasible region given the offline dataset. This seamlessly converts the original trilogy problem to a feasibility-dependent objective, i.e., maximizing reward value within the feasible region while minimizing safety risks in the infeasible region. Inspired by these, we propose FISOR (FeasIbility-guided Safe Offline RL), which allows safety constraint adherence, reward maximization, and offline policy learning to be realized via three decoupled processes, while offering strong safety performance and stability. In FISOR, the optimal policy for the translated optimization problem can be derived in a special form of weighted behavior cloning, which can be effectively extracted with a guided diffusion model thanks to its expressiveness. Moreover, we propose a novel energy-guided sampling method that does not require training a complicated time-dependent classifier to simplify the training.
-                We compare FISOR against baselines on DSRL benchmark for safe offline RL. Evaluation results show that FISOR is the only method that can guarantee safety satisfaction in all tasks, while achieving top returns in most tasks.
+              Multimodal pretraining has emerged as an effective strategy for 
+              the trinity of goals of representation learning in autonomous robots: 
+              1) extracting both local and global task progression information; 2) enforcing temporal consistency of visual representation; 3) capturing trajectory-level language grounding.
+              Most existing methods approach these via separate objectives, which often reach sub-optimal solutions.
+              In this paper, we propose a universal unified objective that can simultaneously extract meaningful task progression information from image sequences and seamlessly align them with language instructions. 
+              We discover that via implicit preferences, where a visual trajectory inherently aligns better with its corresponding language instruction than mismatched pairs, the popular Bradley-Terry model can transform into representation learning through proper reward reparameterizations. The resulted framework, <b><i>DecisionNCE</i></b>, mirrors an InfoNCE-style objective but is distinctively tailored for decision-making tasks, providing an embodied representation learning framework that elegantly <b>extracts both local and global task progression features</b>, with temporal consistency enforced through implicit time contrastive learning, while <b>ensuring trajectory-level instruction grounding</b> via multimodal joint encoding.
+              Evaluation on both simulated and real robots demonstrates that DecisionNCE effectively facilitates diverse downstream policy learning tasks, offering a versatile solution for unified representation and reward learning.
             </p>
           </div>
         </div>
       </div>
   </div>
-</section> -->
-
-<!-- Methods SECTION -->
-<section class="hero is-light is-small">
-    <div class="hero-body has-text-centered">
-      <h1 class="title is-1 mmmu">Methods</h1>
-    </div>
-  </section>
+</section>
 
 
 <section class="section">
@@ -214,26 +202,195 @@
       <div class="columns is-centered has-text-centered">
         <!-- <div class="column is-full-width has-text-centered"> -->
         <div class="column is-four-fifths">
-            <h2 class="title is-3">Offline Identification of Feasibility</h2>
+            <h2 class="title is-3">Downstream Control Tasks Results</h2>
           <div class="content has-text-justified">
           <p>
-            We can predetermine the approximately largest feasible region using offline datasets, <b>without the need to train a policy</b>. Compared to the commonly used cost state-value function, our approach yields a lower approximation error.
+            The DecisionNCE encoders are pretrained using large-scale human video dataset <a href="https://epic-kitchens.github.io/2023">EpicKitchen</a>.
+            We freeze the pretrained vision-language encoders and use their output representations as input to a 256-256 MLP to train LCBC policies.
         </p>
+        <div class="column">
+          <h3 style="text-align:left" class="title is-4">Results on Real Robots</h3>
+          <div class="content has-text-justified">
+          
           <div class="content has-text-centered">
-            <img src="./assets/qh.jpg" alt="algebraic reasoning" class="center">
-            <p><b><i>Figure 1:</i></b> (a) Reach-avoid control task: the agent (red) aim to reach the goal (green) while avoiding hazards (blue). (b) Offline data distribution. (c)-(e) Comparisons with the  feasible region learned by feasible value 
-                {s|V*_h(s)&lt=0} and cost value {s|V*_c(s)&lt=1e-3}.</p>
+            <img src="./assets/web/realrobot.jpg" alt="algebraic reasoning" class="center">
+            <p><b><i>Figure 1:</i></b> Real robot LCBC experimental results. Success rate is averaged over 10 episodes and 3 seeds.</p>
           </div>
+
+          <div class="column">
+            <h3 style="text-align:left" class="title is-4">Red cup on silver pan</h3>
+            <div class="content has-text-justified">
+            </div>
+              <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                <source src="./assets/web/redcupsilverpan/1.mp4"
+                        type="video/mp4">
+              </video>
+              <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                <source src="./assets/web/redcupsilverpan/2.mp4"
+                        type="video/mp4">
+              </video>
+              <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                <source src="./assets/web/redcupsilverpan/3.mp4"
+                        type="video/mp4">
+              </video>
+            </div>
+
+              <div class="column">
+                <h3 style="text-align:left" class="title is-4">Red cup on red plate</h3>
+                <div class="content has-text-justified">
+                </div>
+                  <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                    <source src="./assets/web/redcupredplate/1.mp4"
+                            type="video/mp4">
+                  </video>
+                  <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                    <source src="./assets/web/redcupredplate/2.mp4"
+                            type="video/mp4">
+                  </video>
+                  <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                    <source src="./assets/web/redcupredplate/3.mp4"
+                            type="video/mp4">
+                  </video>
+                </div>
+
+                  <div class="column">
+                    <h3 style="text-align:left" class="title is-4">Duck on green plate</h3>
+                    <div class="content has-text-justified">
+                    </div>
+                      <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                        <source src="./assets/web/duckgreenplate/1.mp4"
+                                type="video/mp4">
+                      </video>
+                      <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                        <source src="./assets/web/duckgreenplate/2.mp4"
+                                type="video/mp4">
+                      </video>
+                      <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                        <source src="./assets/web/duckgreenplate/3.mp4"
+                                type="video/mp4">
+                      </video>
+                    </div>
+
+
+                    <div class="column">
+                      <h3 style="text-align:left" class="title is-4">Duck in pot</h3>
+                      <div class="content has-text-justified">
+                      </div>
+                        <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                          <source src="./assets/web/duckpot/1.mp4"
+                                  type="video/mp4">
+                        </video>
+                        <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                          <source src="./assets/web/duckpot/2.mp4"
+                                  type="video/mp4">
+                        </video>
+                        <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                          <source src="./assets/web/duckpot/3.mp4"
+                                  type="video/mp4">
+                        </video>
+                      </div>
+
+                      <div class="column">
+                        <h3 style="text-align:left" class="title is-4">Move pot</h3>
+                        <div class="content has-text-justified">
+                        </div>
+                          <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                            <source src="./assets/web/movepot/1.mp4"
+                                    type="video/mp4">
+                          </video>
+                          <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                            <source src="./assets/web/movepot/2.mp4"
+                                    type="video/mp4">
+                          </video>
+                          <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                            <source src="./assets/web/movepot/3.mp4"
+                                    type="video/mp4">
+                          </video>
+                        </div>
+  
+                        <div class="column">
+                          <h3 style="text-align:left" class="title is-4">Fold cloth</h3>
+                          <div class="content has-text-justified">
+                          </div>
+                            <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                              <source src="./assets/web/foldcloth/1.mp4"
+                                      type="video/mp4">
+                            </video>
+                            <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                              <source src="./assets/web/foldcloth/2.mp4"
+                                      type="video/mp4">
+                            </video>
+                            <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                              <source src="./assets/web/foldcloth/3.mp4"
+                                      type="video/mp4">
+                            </video>
+                          </div>
+    
+                          <div class="column">
+                            <h3 style="text-align:left" class="title is-4">Flip the red cup upright</h3>
+                            <div class="content has-text-justified">
+                            </div>
+                              <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                <source src="./assets/web/flip/1.mp4"
+                                        type="video/mp4">
+                              </video>
+                              <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                <source src="./assets/web/flip/2.mp4"
+                                        type="video/mp4">
+                              </video>
+                              <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                <source src="./assets/web/flip/3.mp4"
+                                        type="video/mp4">
+                              </video>
+                            </div>
+
+                            <div class="column">
+                              <h3 style="text-align:left" class="title is-4">Open the microwave</h3>
+                              <div class="content has-text-justified">
+                              </div>
+                                <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                  <source src="./assets/web/openmicrowave/1.mp4"
+                                          type="video/mp4">
+                                </video>
+                                <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                  <source src="./assets/web/openmicrowave/2.mp4"
+                                          type="video/mp4">
+                                </video>
+                                <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                  <source src="./assets/web/openmicrowave/3.mp4"
+                                          type="video/mp4">
+                                </video>
+                              </div>
+        
+
+                              <div class="column">
+                                <h3 style="text-align:left" class="title is-4">Close the microwave</h3>
+                                <div class="content has-text-justified">
+                                </div>
+                                  <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                    <source src="./assets/web/closemicrowave/1.mp4"
+                                            type="video/mp4">
+                                  </video>
+                                  <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                    <source src="./assets/web/closemicrowave/2.mp4"
+                                            type="video/mp4">
+                                  </video>
+                                  <video id="dollyzoom" autoplay controls muted loop playsinline width="32.5%" height="100%">
+                                    <source src="./assets/web/closemicrowave/3.mp4"
+                                            type="video/mp4">
+                                  </video>
+                                </div>
+                  </div>
+                </div>
         </div>
         </div>
       </div>
 
 </section>    
 
-<section class="section">
+<!-- <section class="section">
     <div class="container">
       <div class="columns is-centered has-text-centered">
-        <!-- <div class="column is-full-width has-text-centered"> -->
         <div class="column is-four-fifths">
             <h2 class="title is-3">Feasibility-Guided Diffusion Model</h2>
           <div class="content has-text-justified">
@@ -252,81 +409,12 @@
         </div>
       </div>
 
-</section>    
-
-<!-- RESULTS SECTION -->
-<section class="hero is-light is-small">
-    <div class="hero-body has-text-centered">
-      <h1 class="title is-1 mmmu">Experiment Results</h1>
-    </div>
-  </section>
-
-  
-
-<section class="section">
-    <div class="container">
-      <div class="columns is-centered has-text-centered">
-        <!-- <div class="column is-full-width has-text-centered"> -->
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Main Results</h2>
-          <div class="content has-text-centered">
-            <img src="./assets/mainresult.jpg" alt="algebraic reasoning" class="center">
-            <p><b><i>Table 1:</i></b> Normalized <a href="https://github.com/liuzuxin/DSRL">DSRL</a> benchmark results. Each value is averaged over 20 evaluation episodes and 3 seeds. <span style="color: #0000FF;">Blue</span>: Safe agents with the highest reward. <span style="color: #656565;">Gray</span>: Unsafe agents. <b>Bold</b>: safe agents whose normalized cost is smaller than 1.</p>
-          </div>
-        </div>
-      </div>
-
-</section>      
-
-<section class="section">
-    <div class="container">
-      <div class="columns is-centered has-text-centered">
-        <!-- <div class="column is-full-width has-text-centered"> -->
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Soft Constraint Under Different Cost Limits</h2>
-          <div class="content has-text-justified">
-          <p>
-            We evaluate the sensitivity of cost limit selection for soft-constraint-based methods to demonstrate the effectiveness of hard constraint. 
-            Results shows that most soft-constraint-based methods are highly sensitive to the value of cost limit. In some cases, choosing a small cost limit even leads to an increase in the final cost. ]
-            This shows that it is difficult for these methods to select the right cost limit to achieve the best performance, which requires task-specific tuning. 
-            In contrast, our algorithm, which considers hard constraints, does not encounter this issue and achieves superior results <b>using only one group of hyperparameters</b>.
+</section>     -->
 
 
-            </p>
-          <div class="content has-text-centered">
-            <img src="./assets/cost_limit.jpg" alt="algebraic reasoning" class="center">
-            <p><b><i>Figure 3:</i></b> Soft constraint sensitivity experiments for cost limit. </p>
-          </div>
-        </div>
-        </div>
-      </div>
-
-</section>  
-
-<section class="section">
-    <div class="container">
-      <div class="columns is-centered has-text-centered">
-        <!-- <div class="column is-full-width has-text-centered"> -->
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Data Quantity Sensitivity Experiment</h2>
-          <div class="content has-text-justified">
-          <p>
-            We select some competitive baselines that achieve relatively good safety and reward performances in Table 1 and train them with 1/2 and 1/10 of the data volume. 
-            FISOR still meets safety requirements and demonstrates more stable performance compared to other methods, although a reduction in data volume weakens FISOR's safety a little. 
-            We believe FISOR enjoys such good stability as it decouples the intricate training processes of safe offline RL, which greatly enhances training performances.
-        </p>
-          <div class="content has-text-centered">
-            <img src="./assets/datavolum.jpg" alt="algebraic reasoning" class="center">
-            <p><b><i>Figure 4:</i></b> Data quantity sensitivity experiment results. </p>
-          </div>
-        </div>
-        </div>
-      </div>
-
-</section>   
 
 <!-- @PAN TODO: bibtex -->
-<section class="section" id="BibTeX">
+<!-- <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <h2 class="title is-3 has-text-centered">BibTeX</h2>
       <pre><code>
@@ -338,7 +426,7 @@
        }
   </code></pre>
     </div>
-</section>
+</section> -->
   
 <footer class="footer">
 <!-- <div class="container"> -->
