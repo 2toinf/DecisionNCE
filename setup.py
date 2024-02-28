@@ -11,6 +11,7 @@ def read(fname):
 
 setup(
     name='DecisionNCE',
+    py_modules=["decisionnce"],
     version='0.0.0',
     packages=find_packages(),
     description='DecisionNCE: Embodied Multimodal Representations via Implicit Preference LearningnNCE',
@@ -19,7 +20,10 @@ setup(
     install_requires=[
         'torch<=1.13.1',
         'torchvision>=0.8.2',
-        'timm',
-        'mmcv'
+        'timm==0.9.12',
+        'mmcv-full==1.5.0',
+        'tqdm',
+        'numpy',
+        'tensorboardX'
     ]
 )

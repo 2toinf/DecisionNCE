@@ -40,7 +40,37 @@ pip install -e .
 
 ### Usage
 
+```python
+import decisionnce
+# Load your DecisionNCE model
 
+```
+
+### API
+
+#### `clip.load(name, device)`
+
+Returns the DecisionNCE model specified by the model name returned by `clip.available_models()`. It will download the model as necessary. The `name` argument can also be a path to a local checkpoint.
+
+The device to run the model can be optionally specified, and the default is to use the first CUDA device if there is any, otherwise the CPU. 
+
+---
+
+
+
+The model returned by `decisionnce.load()` supports the following methods:
+
+#### `model.encode_image(image: Tensor)`
+
+Given a batch of images, returns the image features encoded by the vision portion of the DecisionNCE model.
+
+#### `model.encode_text(text: Tensor)`
+
+Given a batch of text tokens, returns the text features encoded by the language portion of theDecisionNCE model.
+
+#### `model(image: Tensor, text: Tensor)`
+
+Given a batch of images and a batch of text tokens, returns two Tensors, containing the logit scores corresponding to each image and text input. The values are cosine similarities between the corresponding image and text features, times 100.
 
 ## Train
 
@@ -62,27 +92,21 @@ sh ./script/slurm_train.sh
 
 Please fill in your image and annotation storage path in the specified location of the [script](https://github.com/2toinf/DecisionNCE/blob/main/script/slurm_train.sh).
 
-### Finetune
-
-============ Updating ==============
-
 ## Model Zoo
 
-| Models    | Pretained Methods | Params<br />(M) | Pretraining Iters | Pretrain ckpt |
-| --------- | ----------------- | --------------- | ----------------- | ------------- |
-| RN50-CLIP | DecisionNCE-P     | 386             | 2W                | [link]()         |
-| RN50-CLIP | DecisionNCE-T     | 386             | 2W                | [Link]()         |
+| Models    | Pretaining Methods | Params<br />(M) | Iters | Pretrain ckpt |
+| --------- | ------------------- | --------------- | ----- | ------------- |
+| RN50-CLIP | DecisionNCE-P       | 386             | 2W    | [link]()         |
+| RN50-CLIP | DecisionNCE-T       | 386             | 2W    | [link]()         |
 
 ## Evaluation
-
-============ Updating ==============
 
 ### Result
 
 1. simulation
 
 <p align="center"> 
-	<img src="assets/web/simulation.png"width="100%"> 
+	<img src="assets/web/simulation.png"width="40%"> 
 </p>
 
 1. real robot
@@ -90,7 +114,6 @@ Please fill in your image and annotation storage path in the specified location 
 <p align="center"> 
 	<img src="assets/images/intro.jpg"width="100%"> 
 </p>
-
 
 ### Visualization
 

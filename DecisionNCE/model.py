@@ -45,18 +45,34 @@ class CLIPBasedEncoder(nn.Module):
 
 
 _MODELS = {
-    "RN50": "https://openaipublic.azureedge.net/clip/models/afeb0e10f9e5a86da6080e35cf09123aca3b358a0c3e3b6c78a7b63bc04b6762/RN50.pt"
+    "DecisionNCE-T": 
+        {
+            "modelid": "RN50",
+            "download_link": "", # TODO: update this link
+        },
+        
+    "DecisionNCE-P": 
+        {
+            "modelid": "RN50",
+            "download_link": "", # TODO: update this link
+        }
 }
 
-def available_models() -> List[str]:
-    """Returns the names of available DecisionNCE models"""
-    print("Currently, DecisionNCE only supports the RN50-CLIP model. \
-        You are welcome to expand DecisionNCE to more and larger models.")
-    return list(_MODELS.keys())
+# https://drive.google.com/file/d/1W91rPI8z6ot5FmMUE4RyW1hUqaO35Ar5/view?usp=drive_link
 
 def load(name: str, device: Union[str, torch.device] = "cuda" if torch.cuda.is_available() else "cpu"):
-    model = CLIPBasedEncoder(name, device)
-    
+    print("Currently, DecisionNCE only supports the RN50-CLIP model. \
+        You are welcome to expand DecisionNCE to more and larger models.")
+    if name in _MODELS:
+        model_path = _download(_MODELS[name]['download_link'], download_root or os.path.expanduser("~/.cache/clip"))
+    else:
+        raise RuntimeError(f"Model {name} not found; available models = {_MODELS.keys()}")
+    model = CLIPBasedEncoder(_MODELS[name]['modelid'], device)
+    with open(model_path, 'rb') as opened_file:
+        state_dict = torch.load(opened_file, map_location="cpu")
+    if 'model' in state_dict:
+        state_dict = state_dict['model']
+    model.load_state_dict(state_dict)
     return model
     
     
