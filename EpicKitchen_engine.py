@@ -184,12 +184,13 @@ import math
 import clip
 from typing import Iterable
 def train_one_epoch(model: torch.nn.Module, 
+                    loss,
                     data_loader: Iterable, 
                     optimizer: torch.optim.Optimizer,
                     device: torch.device, 
                     epoch: int,
                     tb_logger=None, 
-                    start_idx=0
+                    start_idx=0,
                     ):
     model.train(True)
     metric_logger = utils.MetricLogger(delimiter="  ")
@@ -205,7 +206,7 @@ def train_one_epoch(model: torch.nn.Module,
         text_input = clip.tokenize(text_input).to(device, non_blocking=True)
         visual_features, text_features = model(visual_input, text_input)
         visual_features = visual_features.reshape(B, F, visual_features.shape[-1])
-        ppt_loss = Loss_DecisionNCE(visual_features, text_features)
+        ppt_loss = loss(visual_features, text_features)
         loss = ppt_loss
         loss_value = loss.item()
         if not math.isfinite(loss_value):
@@ -231,12 +232,14 @@ def train_one_epoch(model: torch.nn.Module,
 
 
 @torch.no_grad()
-def eval(model: torch.nn.Module, 
-                    data_loader: Iterable, 
-                    device: torch.device, 
-                    epoch: int, 
-                    tb_logger=None
-                    ):
+def eval(         
+        eval_metric,  
+        model: torch.nn.Module, 
+        data_loader: Iterable, 
+        device: torch.device, 
+        epoch: int, 
+        tb_logger=None
+        ):
     model.eval()
     metric_logger = utils.MetricLogger(delimiter="  ")
     header = 'Test:'
