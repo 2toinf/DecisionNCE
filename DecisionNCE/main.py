@@ -26,6 +26,10 @@ import clip
 def get_args_parser():
     parser = argparse.ArgumentParser('DecisionNCE training script', add_help=False)
     
+    # Data preparation
+    parser.add_argument('--image_path',  type=str)
+    parser.add_argument('--meta_file',  type=str)
+    
     # Base Settings
     parser.add_argument('--batch-size', default=16, type=int)
     parser.add_argument('--epochs', default=1000, type=int)
@@ -95,7 +99,7 @@ def get_args_parser():
     parser.add_argument('--start_epoch', default=0, type=int, metavar='N',
                         help='start epoch')
 
-    # Dataset parameters
+    # DataLoader parameters
     parser.add_argument('--num_workers', default=8, type=int)
     parser.add_argument('--pin-mem', action='store_true',
                         help='Pin CPU memory in DataLoader for more efficient (sometimes) transfer to GPU.')
@@ -136,6 +140,8 @@ def main(args):
     cudnn.benchmark = True
 
     train_dataloader = EpicKitchenDataLoader(
+        root=args.image_path,
+        train_meta_file=args.meta_file,
         img_size=args.input_size,
         batch_size=args.batch_size,
         num_workers=args.num_workers,

@@ -1,5 +1,10 @@
-work_path=`pwd`
-work_path=`basename $work_path`
-PYTHONPATH=$PYTHONPATH:../../ GLOG_vmodule=MemcachedClient=-1 \
-srun -n4 --gres=gpu:4  --ntasks-per-node=4 --cpus-per-task=14  \
-python -u DecisionNCE/main.py
+work_path=$(dirname $0)
+filename=$(basename $work_path)
+partition=$1
+gpus=$2
+datapath=$3
+OMP_NUM_THREADS=1 \
+srun -p ${partition} -n ${gpus} --ntasks-per-node=${gpus} --cpus-per-task=14 --gres=gpu:${gpus} \
+python -u DecisionNCE/main.py \
+    --image_path <your image folder path > \
+    --meta_file <path for data annotation >
