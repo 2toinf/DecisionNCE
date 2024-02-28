@@ -19,6 +19,7 @@ setup(
     install_requires=[
         'torch<=1.13.1',
         'torchvision>=0.8.2',
-        'timm'
+        'timm',
+        'mmcv'
     ]
 )

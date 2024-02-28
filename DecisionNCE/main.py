@@ -15,13 +15,14 @@ import torch
 import torch.backends.cudnn as cudnn
 from torch.nn.parallel import DistributedDataParallel as NativeDDP
 from tensorboardX import SummaryWriter
-from DecisionNCE.EpicKitchen_engine import train_one_epoch, EpicKitchenDataLoader
+from datasets.EpicKitchen_engine import train_one_epoch, EpicKitchenDataLoader
 from pathlib import Path
 from timm.scheduler import create_scheduler
 from timm.optim import create_optimizer
 from losses import DecisionNCELoss
 from model import CLIPBasedEncoder
 import clip
+
 def get_args_parser():
     parser = argparse.ArgumentParser('DecisionNCE training script', add_help=False)
     
@@ -61,7 +62,7 @@ def get_args_parser():
     # Learning rate schedule parameters
     parser.add_argument('--sched', default='cosine', type=str, metavar='SCHEDULER',
                         help='LR scheduler (default: "cosine"')
-    parser.add_argument('--lr', type=float, default=2e-6, metavar='LR',
+    parser.add_argument('--lr', type=float, default=1e-5, metavar='LR',
                         help='learning rate (default: 5e-4)')
     parser.add_argument('--lr-noise', type=float, nargs='+', default=None, metavar='pct, pct',
                         help='learning rate noise on/off epoch percentages')
@@ -69,7 +70,7 @@ def get_args_parser():
                         help='learning rate noise limit percent (default: 0.67)')
     parser.add_argument('--lr-noise-std', type=float, default=1.0, metavar='STDDEV',
                         help='learning rate noise std-dev (default: 1.0)')
-    parser.add_argument('--warmup-lr', type=float, default=1e-6, metavar='LR',
+    parser.add_argument('--warmup-lr', type=float, default=1e-5, metavar='LR',
                         help='warmup learning rate (default: 1e-6)')
     parser.add_argument('--min-lr', type=float, default=1e-5, metavar='LR',
                         help='lower lr bound for cyclic schedulers that hit 0 (1e-5)')

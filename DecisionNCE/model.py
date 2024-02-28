@@ -2,6 +2,7 @@ import clip
 import torch
 import torch.nn as nn
 import torchvision.transforms as T
+from typing import Any, Union, List
 
 class CLIPBasedEncoder(nn.Module):
     def __init__(self, modelid="RN50", device="cuda"):
@@ -42,19 +43,20 @@ class CLIPBasedEncoder(nn.Module):
         return self.encode_image(visual_input), self.encode_text(text_input)
 
 
-    
+
 _MODELS = {
     "RN50": "https://openaipublic.azureedge.net/clip/models/afeb0e10f9e5a86da6080e35cf09123aca3b358a0c3e3b6c78a7b63bc04b6762/RN50.pt"
 }
 
 def available_models() -> List[str]:
     """Returns the names of available DecisionNCE models"""
-    print("Currently, DecisionNCE only supports the ResNet50 model. \
-        You are welcome to use our method to expand to more and larger models.")
+    print("Currently, DecisionNCE only supports the RN50-CLIP model. \
+        You are welcome to expand DecisionNCE to more and larger models.")
     return list(_MODELS.keys())
 
-
-from typing import Any, Union, List
-
 def load(name: str, device: Union[str, torch.device] = "cuda" if torch.cuda.is_available() else "cpu"):
-    pass
+    model = CLIPBasedEncoder(name, device)
+    
+    return model
+    
+    
