@@ -3,7 +3,7 @@
 from torch.utils.data import Dataset
 from torchvision import transforms
 import utils
-from petrel_client.client import Client as CephClient
+import mmcv
 import torchvision
 import torch
 import torch.nn as nn
@@ -19,41 +19,43 @@ import torch.distributed as dist
 
 import random
 import torch.nn.functional as F
-# traj_name: 2, start_idx: 6, end_idx: 7, language: 8
-
 
 class EpicKitchen(Dataset):
-    def __init__(
-                 self, 
-                 root = "bridgedata:s3://mydata/epic-kitchens-100/",
-                 meta_file = "/mnt/lustre/zhengjinliang/PPT/EpicKitchen-100-train2.csv", 
+    def __init__(self,  root,
+                 meta_file = "assets/EpicKitchen-100-train.csv", 
                  img_size = 224, 
-                 train = True,
-                 num_frames=2):
-        self.train = train
+                 num_frames=2,
+                 file_client_args=dict(backend='petrel')):
+        """Define EpicKiten Dataset
+        Args:
+            root (str): path of images
+            meta_file (str): Path of meta file
+            img_size (int): input image resolution
+            num_frames (int): frames number of input images sequences
+            backend (str, optional): The storage backend type. Options are 'ceph','petrel'. Default: 'petrel'.
+        .. warning::
+            Meta file should be the required form
+        """
         with open(meta_file, "r") as f:
             self.meta_file = csv.reader(f)
-            self.meta_file = list(self.meta_file)
+            self.meta_file = list(self.meta_file)[1:] # drop the head line
         self.root = root
         self.img_size = img_size
         self.num_frames = num_frames
-        self.client = CephClient()
-        self.create_transform()
-        self.check_list()
-
+        self.client = mmcv.FileClient(**file_client_args)
+        self._create_transform()
+        self._check()
 
     def __len__(self):
         return len(self.language_based_list)
 
-    def check_list(self):
+    def _check(self):
         language_based_dict = {}
-        min_length = 1000
         for line in tqdm(self.meta_file):
             name = line[2]
             start_frame = int(line[6])
             end_frame = int(line[7])
             language = line[8]
-            min_length = min(end_frame - start_frame, min_length)
             if language not in language_based_dict.keys():
                 language_based_dict[language] = []
 
@@ -65,43 +67,33 @@ class EpicKitchen(Dataset):
             })
         self.language_based_dict = language_based_dict
         self.language_based_list = list(language_based_dict.values())
-        print(f"avalible text num is {self.__len__()}")
-        print(f"min_length is {min_length}")
+        print(f"avalible language num is {self.__len__()}")
 
 
-
-    def create_transform(self):
-        if self.train:
-            self.transform = transforms.Compose(
-                [
-                    transforms.RandomResizedCrop((self.img_size, self.img_size), scale=(0.2, 1.0)),
-                ]
-            )
-            self.single_img_transform = transforms.Compose(
-                [
-                    transforms.ToTensor()
-                ]
-            )
-        else:
-            self.transform = transforms.Compose(
-                [
-                    transforms.Resize(self.img_size),
-                    transforms.CenterCrop(self.img_size)
-                ]
-            )
-            self.single_img_transform = transforms.Compose(
-                [
-                    transforms.ToTensor()
-                ]
-            )
-        
+    def _create_transform(self):
+        """Data Augmentation for epickitchen
+        Training Default Settings:
+            For a trajectory: RandomResizedCrop
+            For each image: Colorjitter
+        """
+        self.transform = transforms.Compose(
+            [
+                transforms.RandomResizedCrop((self.img_size, self.img_size), scale=(0.2, 1.0)),
+            ]
+        )
+        self.single_img_transform = transforms.Compose(
+            [
+                transforms.ColorJitter(0.5),
+                transforms.ToTensor()
+            ]
+        )
     
-    def get_single_img(self, img_dict, cur_idx):
+    def _get_single_img(self, img_dict, cur_idx):
         _tmp = "0" * (10 - len(f"{cur_idx}"))
         frame_name = f"frame_{_tmp}{cur_idx}.jpg"
         img_path = osp.join(img_dict, frame_name)
         try:
-            value = self.client.Get(img_path)
+            value = self.client.get(img_path)
             img_bytes = np.frombuffer(value, np.uint8)
             buff = io.BytesIO(img_bytes)
             with Image.open(buff) as img:
@@ -110,17 +102,17 @@ class EpicKitchen(Dataset):
         except:
             print(f"Error when get img {img_path}, try to get nearest one")
             if cur_idx > 1:
-                return self.get_single_img(img_dict, cur_idx - 1)
+                return self._get_single_img(img_dict, cur_idx - 1)
             else:
-                return self.get_single_img(img_dict, cur_idx + 1)
+                return self._get_single_img(img_dict, cur_idx + 1)
         return img
     
 
-    def get_a_traj(self, traj_meta):
+    def _get_a_traj(self, traj_meta):
         sampled_numbers = random.sample(range(traj_meta['start_idx'], traj_meta['end_idx'] + 1), self.num_frames)
         sorted_numbers = sorted(sampled_numbers)
         frames = [
-            self.get_single_img(traj_meta['path'], int(i))
+            self._get_single_img(traj_meta['path'], int(i))
             for i in sorted_numbers
         ]
         frames = torch.stack(frames, dim = 0)
@@ -128,54 +120,41 @@ class EpicKitchen(Dataset):
         return frames # shape-> F, 3, H, W
         
     def __getitem__(self, index):
-
-        # determined the negetive traj
         img_training_data = random.choice(self.language_based_list[index])
-        imgs = self.get_a_traj(img_training_data)
+        imgs = self._get_a_traj(img_training_data)
         return imgs, img_training_data['language']
 
 
 
 
-def EpicKitchenDataLoader(root= "bridgedata:s3://mydata/epic-kitchens-100/",
+def EpicKitchenDataLoader(root,
+                      train_meta_file,
                       img_size=224,
                       batch_size=2,
                       num_workers=8,
                       pin_mem=True,
                       num_frames = 2
                       ):
+    num_tasks = utils.get_world_size()
+    global_rank = utils.get_rank()
     train_dataset = EpicKitchen(root=root, 
-        meta_file="/mnt/lustre/zhengjinliang/PPT/EpicKitchen-100_train2.csv", 
-        img_size=img_size, 
-        num_frames=num_frames,
-        train=True)
+                    meta_file=train_meta_file, 
+                    img_size=img_size, 
+                    num_frames=num_frames,
+                    train=True)
+    sampler = torch.utils.data.DistributedSampler(
+            train_dataset, num_replicas=num_tasks, rank=global_rank, shuffle=True
+        )
     train_dataloader = torch.utils.data.DataLoader(
         train_dataset,
+        sampler=sampler,
         shuffle=True,
         batch_size=batch_size,
         num_workers=num_workers,
         pin_memory=pin_mem,
         drop_last=True
     )
-
-
-    eval_dataset = EpicKitchen(root=root, 
-            meta_file="/mnt/lustre/zhengjinliang/PPT/EpicKitchen-100_test2.csv", 
-            img_size=img_size, 
-            num_frames=min(num_frames * 2, 10),
-            train=False)
-    eval_dataloader = torch.utils.data.DataLoader(
-        eval_dataset, 
-        sampler=torch.utils.data.SequentialSampler(eval_dataset),
-        batch_size=256,
-        num_workers=num_workers,
-        pin_memory=pin_mem
-    )
-    return train_dataloader, eval_dataloader
-
-
-
-
+    return train_dataloader
 
 
 
@@ -204,6 +183,7 @@ def train_one_epoch(model: torch.nn.Module,
         B, F, C, H, W = visual_input.shape
         visual_input = visual_input.reshape(B*F, C, H, W).to(device, non_blocking=True)
         text_input = clip.tokenize(text_input).to(device, non_blocking=True)
+        
         visual_features, text_features = model(visual_input, text_input)
         visual_features = visual_features.reshape(B, F, visual_features.shape[-1])
         ppt_loss = loss(visual_features, text_features)
@@ -224,56 +204,10 @@ def train_one_epoch(model: torch.nn.Module,
                 tb_logger.add_scalar('train/{}_avg'.format(k), meter.global_avg, start_idx)
                 tb_logger.add_scalar('train/{}_val'.format(k), meter.value, start_idx)
         start_idx += 1
+        
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
-
-
-
-@torch.no_grad()
-def eval(         
-        eval_metric,  
-        model: torch.nn.Module, 
-        data_loader: Iterable, 
-        device: torch.device, 
-        epoch: int, 
-        tb_logger=None
-        ):
-    model.eval()
-    metric_logger = utils.MetricLogger(delimiter="  ")
-    header = 'Test:'
-    print_freq = 10
-    torch.cuda.synchronize()
-
-    for visual_input, text_input in metric_logger.log_every(data_loader, print_freq, header):
-
-        B, F, C, H, W = visual_input.shape
-        visual_input = visual_input.reshape(B*F, C, H, W).to(device, non_blocking=True)
-        text_input = clip.tokenize(text_input).to(device, non_blocking=True)
-        visual_features, text_features = model(visual_input, text_input)
-        visual_features = visual_features.reshape(B, F, visual_features.shape[-1])
-        acc_avg , acc_top1, acc_avg_text, acc_top1_text, loss, reward = eval_metric(
-            visual_features, text_features
-        )
-        batch_size = B
-        torch.cuda.synchronize()
-        metric_logger.meters['acc_avg'].update(acc_avg.item(), n=batch_size)
-        metric_logger.meters['acc_top1'].update(acc_top1, n=batch_size)
-        metric_logger.meters['acc_avg_text'].update(acc_avg_text.item(), n=batch_size)
-        metric_logger.meters['acc_top1_text'].update(acc_top1_text, n=batch_size)
-        metric_logger.meters['loss'].update(loss.item(), n=batch_size)
-        metric_logger.meters['reward'].update(reward.item(), n=batch_size)
-
-
-    # gather the stats from all processes
-    metric_logger.synchronize_between_processes()
-    if tb_logger is not None and utils.get_rank() == 0:
-        for k, meter in metric_logger.meters.items():
-            tb_logger.add_scalar('eval/{}_avg'.format(k), meter.global_avg, epoch)
-    print("Averaged stats:", metric_logger)
-    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
-
-
 
     

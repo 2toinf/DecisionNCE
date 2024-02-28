@@ -297,7 +297,6 @@ def init_distributed_mode(args, verbose=False):
         os.environ['WORLD_SIZE'] = str(args.world_size)
         os.environ['LOCAL_RANK'] = str(args.rank % num_gpus)
         os.environ['RANK'] = str(args.rank)
-        
     else:
         print('Not using distributed mode')
         args.distributed = False
