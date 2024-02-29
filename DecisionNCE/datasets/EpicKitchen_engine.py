@@ -134,15 +134,13 @@ def EpicKitchenDataLoader(root,
     train_dataset = EpicKitchen(root=root, 
                     meta_file=train_meta_file, 
                     img_size=img_size, 
-                    num_frames=num_frames,
-                    train=True)
+                    num_frames=num_frames)
     sampler = torch.utils.data.DistributedSampler(
             train_dataset, num_replicas=num_tasks, rank=global_rank, shuffle=True
         )
     train_dataloader = torch.utils.data.DataLoader(
         train_dataset,
         sampler=sampler,
-        shuffle=True,
         batch_size=batch_size,
         num_workers=num_workers,
         pin_memory=pin_mem,

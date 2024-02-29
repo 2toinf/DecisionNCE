@@ -13,12 +13,12 @@ import torch
 import torch.backends.cudnn as cudnn
 from torch.nn.parallel import DistributedDataParallel as NativeDDP
 from tensorboardX import SummaryWriter
-from datasets.EpicKitchen_engine import train_one_epoch, EpicKitchenDataLoader
+from DecisionNCE.datasets.EpicKitchen_engine import train_one_epoch, EpicKitchenDataLoader
 from pathlib import Path
 from timm.scheduler import create_scheduler
 from timm.optim import create_optimizer
-from losses import DecisionNCELoss
-from model import CLIPBasedEncoder
+from DecisionNCE.losses import DecisionNCELoss
+from DecisionNCE.model import CLIPBasedEncoder
 import clip
 
 def get_args_parser():

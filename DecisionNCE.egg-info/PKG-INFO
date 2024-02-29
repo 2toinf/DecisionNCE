@@ -1,3 +1,19 @@
+Metadata-Version: 2.1
+Name: DecisionNCE
+Version: 0.0.0
+Summary: DecisionNCE: Embodied Multimodal Representations via Implicit Preference LearningnNCE
+Author: Jianxiong Li, Jinliang Zheng, Yinan Zheng, etc.
+License-File: LICENSE
+Requires-Dist: torch==1.13.1
+Requires-Dist: torchvision==0.14.1
+Requires-Dist: timm==0.9.12
+Requires-Dist: mmcv
+Requires-Dist: tqdm
+Requires-Dist: numpy
+Requires-Dist: tensorboardX
+Requires-Dist: gdown
+Requires-Dist: openai-clip
+
 # DecisionNCE: Embodied Multimodal Representations via Implicit Preference LearningnNCE
 
 [[Project Page](https://2toinf.github.io/DecisionNCE/)]  [[Paper](https://arxiv.org/pdf/2402.18137.pdf)]
