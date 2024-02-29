@@ -28,16 +28,20 @@ class DecisionNCELoss(torch.nn.Module):
         self.loss_type = loss_type
         assert self.loss_type in ['DecionNCE-T', 'DecionNCE-P'], f"Unknow loss type: {loss_type}"
         
-    def forward(self, visual_features, text_features):
-        batch_size = visual_features.shape[0]
-        
+    
+    def get_reward_matrix(self, visual_features, text_features):
         if self.loss_type == 'DecionNCE-T':
-            reward_matrix = get_reward_matrix_T(visual_features, text_features, logit_scale = self.logit_scale)
+            return get_reward_matrix_T(visual_features, text_features, logit_scale = self.logit_scale)
         elif self.loss_type == 'DecionNCE-P':
-            reward_matrix = get_reward_matrix_P(visual_features, text_features, logit_scale = self.logit_scale)
+            return get_reward_matrix_P(visual_features, text_features, logit_scale = self.logit_scale)
         else:
             raise NotImplementedError
-    
+        
+    def forward(self, visual_features, text_features):
+        
+        batch_size = visual_features.shape[0]
+        reward_matrix = self.get_reward_matrix(visual_features, text_features, logit_scale = self.logit_scale)
+
         labels = torch.arange(batch_size, device=reward_matrix.device).long()
         return ( F.cross_entropy(reward_matrix, labels) + \
         F.cross_entropy(reward_matrix.t(), labels) ) / 2

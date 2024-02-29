@@ -26,6 +26,7 @@ setup(
         'numpy',
         'tensorboardX',
         'gdown',
-        'openai-clip'
+        'openai-clip',
+        'chardet'
     ]
 )

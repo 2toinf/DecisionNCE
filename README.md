@@ -41,6 +41,7 @@ pip install -e .
 ### Usage
 
 ```python
+
 import DecisionNCE
 import torch
 from PIL import Image
@@ -55,7 +56,7 @@ text = "Your Instruction Here"
 with torch.no_grad():
     image_features = model.encode_image(image)
     text_features = model.encode_text(text)
-
+    reward = model.get_reward(image, text) # please note that number of image and text should be the same
 ```
 
 ### API
@@ -64,11 +65,9 @@ with torch.no_grad():
 
 Returns the DecisionNCE model specified by the model name returned by `decisionnce.available_models()`. It will download the model as necessary. The `name` argument should be `DecisionNCE-P` or `DecisionNCE-T`
 
-The device to run the model can be optionally specified, and the default is to use the first CUDA device if there is any, otherwise the CPU. 
+The device to run the model can be optionally specified, and the default is to use the first CUDA device if there is any, otherwise the CPU.
 
 ---
-
-
 
 The model returned by `decisionnce.load()` supports the following methods:
 

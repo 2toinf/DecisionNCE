@@ -24,6 +24,12 @@ class CLIPBasedEncoder(nn.Module):
                 T.CenterCrop(self.model.visual.input_resolution),
                 T.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
             )
+        
+    def get_reward(self, visual_input, text_input):
+        visual_feature = self.encode_image(visual_input)
+        text_feature = self.encode_text(text_input) 
+        return torch.nn.functional.cosine_similarity(visual_feature, text_feature, dim=-1)
+
 
     def encode_image(self, visual_input):
         if type(visual_input) != torch.Tensor:
@@ -91,6 +97,8 @@ def load(name: str, device: Union[str, torch.device] = "cuda" if torch.cuda.is_a
     if 'model' in state_dict:
         state_dict = state_dict['model']
     model.load_state_dict(state_dict, strict=False)
+    
+    print("========= Load Successfully ========")
     return model
     
     
