@@ -112,7 +112,7 @@ Please fill in your image and annotation storage path in the specified location 
 1. real robot
 
 <p align="center"> 
-	<img src="assets/images/intro.jpg"width="100%"> 
+	<img src="assets/web/realrobot.jpg"width="100%"> 
 </p>
 
 ### Visualization
