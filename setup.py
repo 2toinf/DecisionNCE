@@ -14,7 +14,7 @@ setup(
     py_modules=["decisionnce"],
     version='0.0.0',
     packages=find_packages(),
-    description='DecisionNCE: Embodied Multimodal Representations via Implicit Preference LearningnNCE',
+    description='DecisionNCE: Embodied Multimodal Representations via Implicit Preference Learning',
     long_description=read('README.md'),
     author='Jianxiong Li, Jinliang Zheng, Yinan Zheng, etc.',
     install_requires=[

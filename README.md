@@ -1,4 +1,4 @@
-# DecisionNCE: Embodied Multimodal Representations via Implicit Preference LearningnNCE
+# DecisionNCE: Embodied Multimodal Representations via Implicit Preference Learning
 
 [[Project Page](https://2toinf.github.io/DecisionNCE/)]  [[Paper](https://arxiv.org/pdf/2402.18137.pdf)]
 
