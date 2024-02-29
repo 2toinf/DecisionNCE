@@ -79,8 +79,8 @@ def _download(url: str, name: str,root: str):
 
 
 def load(name: str, device: Union[str, torch.device] = "cuda" if torch.cuda.is_available() else "cpu"):
-    print("Currently, DecisionNCE only supports the RN50-CLIP model. \
-        You are welcome to expand DecisionNCE to more and larger models.")
+    print("===========Currently, DecisionNCE only supports the RN50-CLIP model.\
+    You are welcome to expand DecisionNCE to more and larger models.==============")
     if name in _MODELS:
         model_path = _download(_MODELS[name]['download_link'], name, os.path.expanduser(f"~/.cache/DecisionNCE"))
     else:
