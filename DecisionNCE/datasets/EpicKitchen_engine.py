@@ -155,7 +155,7 @@ import math
 import clip
 from typing import Iterable
 def train_one_epoch(model: torch.nn.Module, 
-                    loss,
+                    loss_model: torch.nn.Module, ,
                     data_loader: Iterable, 
                     optimizer: torch.optim.Optimizer,
                     device: torch.device, 
@@ -178,8 +178,7 @@ def train_one_epoch(model: torch.nn.Module,
         
         visual_features, text_features = model(visual_input, text_input)
         visual_features = visual_features.reshape(B, F, visual_features.shape[-1])
-        ppt_loss = loss(visual_features, text_features)
-        loss = ppt_loss
+        loss = loss_model(visual_features, text_features)
         loss_value = loss.item()
         if not math.isfinite(loss_value):
             print("Loss is {}, stopping training".format(loss_value))
@@ -188,7 +187,6 @@ def train_one_epoch(model: torch.nn.Module,
         loss.backward()
         optimizer.step()
         torch.cuda.synchronize()
-        metric_logger.update(ppt_loss=ppt_loss.item())
         metric_logger.update(loss=loss_value)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
         if tb_logger is not None and utils.get_rank() == 0 and start_idx % 50 == 0:
