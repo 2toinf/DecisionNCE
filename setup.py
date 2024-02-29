@@ -21,7 +21,7 @@ setup(
         'torch==1.13.1',
         'torchvision==0.14.1',
         'timm==0.9.12',
-        'mmcv',
+        'mmcv-lite',
         'tqdm',
         'numpy',
         'tensorboardX',
