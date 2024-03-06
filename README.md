@@ -129,3 +129,15 @@ We provide our [jupyter notebook]() to visualize the reward curves. Please insta
 ```python
 conda install jupyter notebook
 ```
+
+### Citation
+If you find our code and paper can help, please cite our paper as:
+
+```
+@article{li2024decisionnce,
+  title={DecisionNCE: Embodied Multimodal Representations via Implicit Preference Learning},
+  author={Li, Jianxiong and Zheng, Jinliang and Zheng, Yinan and Mao, Liyuan and Hu, Xiao and Cheng, Sijie and Niu, Haoyi and Liu, Jihao and Liu, Yu and Liu, Jingjing and others},
+  journal={arXiv preprint arXiv:2402.18137},
+  year={2024}
+}
+```
