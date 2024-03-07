@@ -58,18 +58,18 @@ _MODELS = {
     "DecisionNCE-T": 
         {
             "modelid": "RN50",
-            "download_link": "https://drive.google.com/uc?export=download&id=1W91rPI8z6ot5FmMUE4RyW1hUqaO35Ar5", # TODO: update this link
+            "download_link": "https://drive.google.com/uc?export=download&id=14wn2R5ZDNujSq9Tsaeuy6fJNr6zM5l7E",
         },
         
     "DecisionNCE-P": 
         {
             "modelid": "RN50",
-            "download_link": "https://drive.google.com/uc?export=download&id=1W91rPI8z6ot5FmMUE4RyW1hUqaO35Ar5", # TODO: update this link
+            "download_link": "https://drive.google.com/uc?export=download&id=1LmDHaKMZCv9QT89dWubZ8dRo6qwpVMYo",
         }
 }
 
-# https://drive.google.com/file/d/1W91rPI8z6ot5FmMUE4RyW1hUqaO35Ar5/view?usp=sharing
-
+# P: https://drive.google.com/file/d/1LmDHaKMZCv9QT89dWubZ8dRo6qwpVMYo/view?usp=drive_link
+# T: https://drive.google.com/file/d/14wn2R5ZDNujSq9Tsaeuy6fJNr6zM5l7E/view?usp=drive_link
 
 def _download(url: str, name: str,root: str):
     os.makedirs(root, exist_ok=True)
