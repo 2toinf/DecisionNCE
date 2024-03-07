@@ -3,7 +3,7 @@
 from torch.utils.data import Dataset
 from torchvision import transforms
 import utils
-import mmcv
+import mmengine
 import torch
 import numpy as np
 from PIL import Image
@@ -36,7 +36,7 @@ class EpicKitchen(Dataset):
         self.root = root
         self.img_size = img_size
         self.num_frames = num_frames
-        self.client = mmcv.FileClient(**file_client_args)
+        self.client = mmengine.fileio.FileClient(**file_client_args)
         self._create_transform()
         self._check()
 

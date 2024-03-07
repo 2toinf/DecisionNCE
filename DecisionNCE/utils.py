@@ -13,13 +13,12 @@ import random
 import subprocess
 from collections import defaultdict, deque
 import datetime
-# import mmcv
 
 import torch
 import torch.distributed as dist
 
 logs = set()
-import mmcv
+import mmengine
 
 def load_checkpoint(filename, file_client_args=dict(backend='petrel')):
     """load checkpoint through the file path prefixed with s3.
@@ -27,13 +26,13 @@ def load_checkpoint(filename, file_client_args=dict(backend='petrel')):
         filename (str): checkpoint file path with s3 prefix
         backend (str, optional): The storage backend type. Options are 'ceph','petrel'. Default: 'petrel'.
     .. warning::
-        :class:`mmcv.fileio.file_client.CephBackend` will be
-        deprecated, please use :class:`mmcv.fileio.file_client.
+        :class:`mmengine.fileio.file_client.CephBackend` will be
+        deprecated, please use :class:`mmengine.fileio.file_client.
         PetrelBackend` instead.
     Returns:
         dict or OrderedDict: The loaded checkpoint.
     """
-    file_client = mmcv.FileClient(**file_client_args)
+    file_client = mmengine.fileio.FileClient(**file_client_args)
     with io.BytesIO(file_client.get(filename)) as buffer:
         checkpoint = torch.load(buffer, map_location="cpu")
     return checkpoint
@@ -47,10 +46,10 @@ def save_checkpoint(model,
         model (Module): Module whose params are to be saved.
         filename (str): Checkpoint filename.
         file_client_args (dict, optional): Arguments to instantiate
-            a FileClient. See :class:`mmcv.fileio.FileClient`
+            a FileClient. See :class:`mmengine.fileio.FileClient`
             for details.Default: None.
     """
-    file_client = mmcv.FileClient(**file_client_args)
+    file_client = mmengine.fileio.FileClient(**file_client_args)
     with io.BytesIO() as f:
         torch.save(model, f)
         file_client.put(f.getvalue(), filename)
