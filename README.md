@@ -103,8 +103,8 @@ Please fill in your image and annotation path in the specified location of the [
 
 | Models    | Pretaining Methods | Params<br />(M) | Iters | Pretrain ckpt |
 | --------- | ------------------- | --------------- | ----- | ------------- |
-| RN50-CLIP | DecisionNCE-P       | 386             | 2W    | [link]()         |
-| RN50-CLIP | DecisionNCE-T       | 386             | 2W    | [link]()         |
+| RN50-CLIP | DecisionNCE-P       | 386             | 2W    | [link](https://drive.google.com/file/d/1LmDHaKMZCv9QT89dWubZ8dRo6qwpVMYo/view?usp=drive_link)         |
+| RN50-CLIP | DecisionNCE-T       | 386             | 2W    | [link](https://drive.google.com/file/d/14wn2R5ZDNujSq9Tsaeuy6fJNr6zM5l7E/view?usp=drive_link)         |
 
 ## Evaluation
 
