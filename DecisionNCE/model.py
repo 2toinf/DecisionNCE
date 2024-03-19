@@ -17,6 +17,7 @@ class CLIPBasedEncoder(nn.Module):
         # CLIP precision
         model.float()
         self.model = model 
+        del self.model.logit_scale
         self.model.train()
         self.transforms = cliptransforms
         self.transforms_tensor = nn.Sequential(
