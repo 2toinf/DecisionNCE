@@ -21,18 +21,18 @@ def get_reward_matrix_T(p_e_s, p_e_text, logit_scale = 100.):
         return reward_matrix
 
 class DecisionNCELoss(torch.nn.Module):
-    def __init__(self, logit_scale = 100, loss_type = "DecionNCE-T", **kwargs):
+    def __init__(self, logit_scale = 100, loss_type = "DecisionNCE", **kwargs):
         
         super().__init__()
         self.logit_scale = logit_scale
         self.loss_type = loss_type
-        assert self.loss_type in ['DecionNCE-T', 'DecionNCE-P'], f"Unknow loss type: {loss_type}"
+        assert self.loss_type in ['DecisionNCE-T', 'DecisionNCE-P'], f"Unknow loss type: {loss_type}"
         
     
     def get_reward_matrix(self, visual_features, text_features):
-        if self.loss_type == 'DecionNCE-T':
+        if self.loss_type == 'DecisionNCE-T':
             return get_reward_matrix_T(visual_features, text_features, logit_scale = self.logit_scale)
-        elif self.loss_type == 'DecionNCE-P':
+        elif self.loss_type == 'DecisionNCE-P':
             return get_reward_matrix_P(visual_features, text_features, logit_scale = self.logit_scale)
         else:
             raise NotImplementedError

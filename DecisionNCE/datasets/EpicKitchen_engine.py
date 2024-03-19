@@ -155,7 +155,7 @@ import math
 import clip
 from typing import Iterable
 def train_one_epoch(model: torch.nn.Module, 
-                    loss_model: torch.nn.Module, ,
+                    loss_model: torch.nn.Module, 
                     data_loader: Iterable, 
                     optimizer: torch.optim.Optimizer,
                     device: torch.device, 
