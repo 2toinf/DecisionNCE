@@ -40,7 +40,7 @@ class DecisionNCELoss(torch.nn.Module):
     def forward(self, visual_features, text_features):
         
         batch_size = visual_features.shape[0]
-        reward_matrix = self.get_reward_matrix(visual_features, text_features, logit_scale = self.logit_scale)
+        reward_matrix = self.get_reward_matrix(visual_features, text_features)
 
         labels = torch.arange(batch_size, device=reward_matrix.device).long()
         return ( F.cross_entropy(reward_matrix, labels) + \

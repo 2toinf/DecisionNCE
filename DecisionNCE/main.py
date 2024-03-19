@@ -180,7 +180,7 @@ def main(args):
             train_dataloader.sampler.set_epoch(epoch)
         train_stats = train_one_epoch(
             model, 
-            loss=loss,
+            loss_model=loss,
             data_loader=train_dataloader,
             optimizer=optimizer, 
             device=device, 
