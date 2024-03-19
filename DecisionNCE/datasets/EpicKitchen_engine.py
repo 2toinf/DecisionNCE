@@ -13,13 +13,13 @@ import io
 from tqdm import tqdm
 import random
 import torch.nn.functional as F
+import mmengine.fileio as fileio
 
 class EpicKitchen(Dataset):
     def __init__(self,  root,
                  meta_file = "assets/EpicKitchen-100-train.csv", 
                  img_size = 224, 
-                 num_frames=2,
-                 file_client_args=dict(backend='petrel')):
+                 num_frames=2):
         """Define EpicKiten Dataset
         Args:
             root (str): path of images
@@ -36,7 +36,6 @@ class EpicKitchen(Dataset):
         self.root = root
         self.img_size = img_size
         self.num_frames = num_frames
-        self.client = mmengine.fileio.FileClient(**file_client_args)
         self._create_transform()
         self._check()
 
@@ -87,7 +86,7 @@ class EpicKitchen(Dataset):
         frame_name = f"frame_{_tmp}{cur_idx}.jpg"
         img_path = osp.join(img_dict, frame_name)
         try:
-            value = self.client.get(img_path)
+            value = fileio.get(img_path)
             img_bytes = np.frombuffer(value, np.uint8)
             buff = io.BytesIO(img_bytes)
             with Image.open(buff) as img:
@@ -155,7 +154,7 @@ import math
 import clip
 from typing import Iterable
 def train_one_epoch(model: torch.nn.Module, 
-                    loss_model: torch.nn.Module, 
+                    loss_model: torch.nn.Module,
                     data_loader: Iterable, 
                     optimizer: torch.optim.Optimizer,
                     device: torch.device, 
