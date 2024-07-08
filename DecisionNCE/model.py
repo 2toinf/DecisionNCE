@@ -4,8 +4,14 @@ import torch
 import os
 import torch.nn as nn
 import torchvision.transforms as T
-from typing import Any, Union, List
-
+from typing import Union
+from PIL import Image
+try:
+    from torchvision.transforms import InterpolationMode
+    BICUBIC = InterpolationMode.BICUBIC
+except ImportError:
+    BICUBIC = Image.BICUBIC
+    
 class CLIPBasedEncoder(nn.Module):
     def __init__(self, modelid="RN50", device="cuda"):
         
@@ -21,7 +27,7 @@ class CLIPBasedEncoder(nn.Module):
         self.model.train()
         self.transforms = cliptransforms
         self.transforms_tensor = nn.Sequential(
-                T.Resize(self.model.visual.input_resolution, antialias=None),
+                T.Resize(self.model.visual.input_resolution, interpolation=BICUBIC,antialias=None),
                 T.CenterCrop(self.model.visual.input_resolution),
                 T.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
             )
@@ -98,8 +104,7 @@ def load(name: str, device: Union[str, torch.device] = "cuda" if torch.cuda.is_a
     if 'model' in state_dict:
         state_dict = state_dict['model']
     model.load_state_dict(state_dict, strict=False)
-    
     print("========= Load Successfully ========")
-    return model
+    return model.eval()
     
     
