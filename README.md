@@ -2,8 +2,7 @@
 
 [[Project Page](https://2toinf.github.io/DecisionNCE/)]  [[Paper](https://arxiv.org/pdf/2402.18137.pdf)]
 
-
-🔥 **DecisionNCE has been accepted by ICML2024**
+🔥 **DecisionNCE has been accepted by ICML2024 and selected as outstanding paper at MFM-EAI workshop@ICML2024**
 
 ## Introduction
 
@@ -104,10 +103,10 @@ Please fill in your image and annotation path in the specified location of the [
 
 ## Model Zoo
 
-| Models    | Pretaining Methods | Params<br />(M) | Iters | Pretrain ckpt |
-| --------- | ------------------- | --------------- | ----- | ------------- |
-| RN50-CLIP | DecisionNCE-P       | 386             | 2W    | [link](https://drive.google.com/file/d/1LmDHaKMZCv9QT89dWubZ8dRo6qwpVMYo/view?usp=drive_link)         |
-| RN50-CLIP | DecisionNCE-T       | 386             | 2W    | [link](https://drive.google.com/file/d/14wn2R5ZDNujSq9Tsaeuy6fJNr6zM5l7E/view?usp=drive_link)         |
+| Models    | Pretaining Methods | Params<br />(M) | Iters | Pretrain ckpt                                                                              |
+| --------- | ------------------- | --------------- | ----- | ------------------------------------------------------------------------------------------ |
+| RN50-CLIP | DecisionNCE-P       | 386             | 2W    | [link](https://drive.google.com/file/d/1LmDHaKMZCv9QT89dWubZ8dRo6qwpVMYo/view?usp=drive_link) |
+| RN50-CLIP | DecisionNCE-T       | 386             | 2W    | [link](https://drive.google.com/file/d/14wn2R5ZDNujSq9Tsaeuy6fJNr6zM5l7E/view?usp=drive_link) |
 
 ## Evaluation
 
@@ -127,16 +126,18 @@ Please fill in your image and annotation path in the specified location of the [
 
 ### Visualization
 
-
 We provide our [jupyter notebook]() to visualize the reward curves. Please install jupyter notebook first.
 
 ```python
 conda install jupyter notebook
 ```
+
 ---
+
 TO BE UPDATE
 
 ### Citation
+
 If you find our code and paper can help, please cite our paper as:
 
 ```
