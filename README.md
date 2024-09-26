@@ -35,8 +35,6 @@ cd DecisionNCE
 ```bash
 conda create -n decisionnce python=3.8 -y
 conda activate decisionnce
-git clone https://github.com/2toinf/DecisionNCE.git
-cd DecisionNCE
 pip install -e .
 ```
 
