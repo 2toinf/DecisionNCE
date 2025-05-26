@@ -35,6 +35,7 @@ cd DecisionNCE
 ```bash
 conda create -n decisionnce python=3.8 -y
 conda activate decisionnce
+pip install torch==1.13.1 torchvision==0.14.1 --index-url https://download.pytorch.org/whl/cpu
 pip install -e .
 ```
 
